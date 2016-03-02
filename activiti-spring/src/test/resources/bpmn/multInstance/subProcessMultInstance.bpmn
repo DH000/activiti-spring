@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn"
+	xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema"
+	expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+	<process id="subProcessMultInstance" name="My process" isExecutable="true">
+		<startEvent id="startevent1" name="Start"></startEvent>
+		<subProcess id="subprocess1" name="Sub Process">
+			<extensionElements>
+				<activiti:executionListener event="end" class="com.lin.activiti.execution.listener.MultInstanceExceutionListener">
+					<activiti:field name="name">
+						<activiti:string><![CDATA[sub process]]></activiti:string>
+					</activiti:field>
+				</activiti:executionListener>
+			</extensionElements>
+			<multiInstanceLoopCharacteristics isSequential="false">
+				<loopCardinality>3</loopCardinality>
+				<completionCondition><![CDATA[${nrOfCompletedInstances/nrOfInstances >= 0.6 }]]></completionCondition>
+			</multiInstanceLoopCharacteristics>
+			<startEvent id="startevent2" name="Start"></startEvent>
+			<serviceTask id="servicetask2" name="Service Task" activiti:expression="#{printer.printMessage('sub process is executing.')}"></serviceTask>
+			<sequenceFlow id="flow5" sourceRef="startevent2" targetRef="servicetask2"></sequenceFlow>
+			<endEvent id="endevent2" name="End"></endEvent>
+			<intermediateCatchEvent id="timerintermediatecatchevent1" name="TimerCatchEvent">
+				<timerEventDefinition>
+					<timeDuration>PT3S</timeDuration>
+				</timerEventDefinition>
+			</intermediateCatchEvent>
+			<sequenceFlow id="flow6" sourceRef="servicetask2" targetRef="timerintermediatecatchevent1"></sequenceFlow>
+			<sequenceFlow id="flow7" sourceRef="timerintermediatecatchevent1" targetRef="endevent2"></sequenceFlow>
+		</subProcess>
+		<sequenceFlow id="flow2" sourceRef="startevent1" targetRef="subprocess1"></sequenceFlow>
+		<serviceTask id="servicetask1" name="Service Task" activiti:expression="#{printer.printMessage('ending task is executing.')}">
+			<extensionElements>
+				<activiti:executionListener event="start" class="com.lin.activiti.execution.listener.MultInstanceExceutionListener">
+					<activiti:field name="name">
+						<activiti:string><![CDATA[ending task]]></activiti:string>
+					</activiti:field>
+				</activiti:executionListener>
+			</extensionElements>
+		</serviceTask>
+		<sequenceFlow id="flow3" sourceRef="subprocess1" targetRef="servicetask1"></sequenceFlow>
+		<endEvent id="endevent1" name="End"></endEvent>
+		<sequenceFlow id="flow4" sourceRef="servicetask1" targetRef="endevent1"></sequenceFlow>
+	</process>
+	<bpmndi:BPMNDiagram id="BPMNDiagram_subProcessMultInstance">
+		<bpmndi:BPMNPlane bpmnElement="subProcessMultInstance" id="BPMNPlane_subProcessMultInstance">
+			<bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
+				<omgdc:Bounds height="35.0" width="35.0" x="120.0" y="240.0"></omgdc:Bounds>
+			</bpmndi:BPMNShape>
+			<bpmndi:BPMNShape bpmnElement="subprocess1" id="BPMNShape_subprocess1">
+				<omgdc:Bounds height="205.0" width="421.0" x="230.0" y="155.0"></omgdc:Bounds>
+			</bpmndi:BPMNShape>
+			<bpmndi:BPMNShape bpmnElement="startevent2" id="BPMNShape_startevent2">
+				<omgdc:Bounds height="35.0" width="35.0" x="260.0" y="240.0"></omgdc:Bounds>
+			</bpmndi:BPMNShape>
+			<bpmndi:BPMNShape bpmnElement="servicetask2" id="BPMNShape_servicetask2">
+				<omgdc:Bounds height="55.0" width="105.0" x="340.0" y="230.0"></omgdc:Bounds>
+			</bpmndi:BPMNShape>
+			<bpmndi:BPMNShape bpmnElement="endevent2" id="BPMNShape_endevent2">
+				<omgdc:Bounds height="35.0" width="35.0" x="590.0" y="240.0"></omgdc:Bounds>
+			</bpmndi:BPMNShape>
+			<bpmndi:BPMNShape bpmnElement="timerintermediatecatchevent1" id="BPMNShape_timerintermediatecatchevent1">
+				<omgdc:Bounds height="35.0" width="35.0" x="490.0" y="240.0"></omgdc:Bounds>
+			</bpmndi:BPMNShape>
+			<bpmndi:BPMNShape bpmnElement="servicetask1" id="BPMNShape_servicetask1">
+				<omgdc:Bounds height="55.0" width="105.0" x="731.0" y="230.0"></omgdc:Bounds>
+			</bpmndi:BPMNShape>
+			<bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+				<omgdc:Bounds height="35.0" width="35.0" x="880.0" y="240.0"></omgdc:Bounds>
+			</bpmndi:BPMNShape>
+			<bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+				<omgdi:waypoint x="295.0" y="257.0"></omgdi:waypoint>
+				<omgdi:waypoint x="340.0" y="257.0"></omgdi:waypoint>
+			</bpmndi:BPMNEdge>
+			<bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+				<omgdi:waypoint x="445.0" y="257.0"></omgdi:waypoint>
+				<omgdi:waypoint x="490.0" y="257.0"></omgdi:waypoint>
+			</bpmndi:BPMNEdge>
+			<bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">
+				<omgdi:waypoint x="525.0" y="257.0"></omgdi:waypoint>
+				<omgdi:waypoint x="590.0" y="257.0"></omgdi:waypoint>
+			</bpmndi:BPMNEdge>
+			<bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+				<omgdi:waypoint x="155.0" y="257.0"></omgdi:waypoint>
+				<omgdi:waypoint x="230.0" y="257.0"></omgdi:waypoint>
+			</bpmndi:BPMNEdge>
+			<bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+				<omgdi:waypoint x="651.0" y="257.0"></omgdi:waypoint>
+				<omgdi:waypoint x="731.0" y="257.0"></omgdi:waypoint>
+			</bpmndi:BPMNEdge>
+			<bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+				<omgdi:waypoint x="836.0" y="257.0"></omgdi:waypoint>
+				<omgdi:waypoint x="880.0" y="257.0"></omgdi:waypoint>
+			</bpmndi:BPMNEdge>
+		</bpmndi:BPMNPlane>
+	</bpmndi:BPMNDiagram>
+</definitions>

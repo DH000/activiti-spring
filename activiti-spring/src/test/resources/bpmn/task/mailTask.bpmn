@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn"
+	xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema"
+	expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+	<process id="mailTask" name="My process" isExecutable="true">
+		<startEvent id="startevent1" name="Start"></startEvent>
+		<scriptTask id="scripttask1" name="Script Task" activiti:autoStoreVariables="true" scriptFormat="groovy">
+			<script>
+				execution.setVariable("recipient", "***@qq.com")
+				execution.setVariable("orderId", "00000")
+				execution.setVariable("recipientName", "toto")
+				execution.setVariable("now", "2016")
+			</script>
+		</scriptTask>
+		<sequenceFlow id="flow1" sourceRef="startevent1" targetRef="scripttask1"></sequenceFlow>
+		<serviceTask id="mailtask1" name="Mail Task" activiti:type="mail">
+			<extensionElements>
+				<activiti:field name="from" stringValue="order-shipping@thecompany.com" />
+				<activiti:field name="to" expression="${recipient}" />
+				<activiti:field name="subject" expression="Your order ${orderId} has been shipped" />
+				<activiti:field name="html">
+					<activiti:expression>
+				        <![CDATA[
+				          <html>
+				            <body>
+				              Hello ${isMan ? 'Mr.' : 'Mrs.' } ${recipientName},<br/><br/>
+				
+				              As of ${now}, your order has been <b>processed and shipped</b>.<br/><br/>
+				
+				              Kind regards,<br/>
+				
+				              TheCompany.
+				            </body>
+				          </html>
+				        ]]>
+      				</activiti:expression>
+				</activiti:field>
+			</extensionElements>
+		</serviceTask>
+		<sequenceFlow id="flow2" sourceRef="scripttask1" targetRef="mailtask1"></sequenceFlow>
+		<endEvent id="endevent1" name="End"></endEvent>
+		<sequenceFlow id="flow3" sourceRef="mailtask1" targetRef="endevent1"></sequenceFlow>
+	</process>
+	<bpmndi:BPMNDiagram id="BPMNDiagram_myProcess">
+		<bpmndi:BPMNPlane bpmnElement="myProcess" id="BPMNPlane_myProcess">
+			<bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
+				<omgdc:Bounds height="35.0" width="35.0" x="60.0" y="150.0"></omgdc:Bounds>
+			</bpmndi:BPMNShape>
+			<bpmndi:BPMNShape bpmnElement="scripttask1" id="BPMNShape_scripttask1">
+				<omgdc:Bounds height="55.0" width="105.0" x="140.0" y="140.0"></omgdc:Bounds>
+			</bpmndi:BPMNShape>
+			<bpmndi:BPMNShape bpmnElement="mailtask1" id="BPMNShape_mailtask1">
+				<omgdc:Bounds height="55.0" width="105.0" x="290.0" y="140.0"></omgdc:Bounds>
+			</bpmndi:BPMNShape>
+			<bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+				<omgdc:Bounds height="35.0" width="35.0" x="440.0" y="150.0"></omgdc:Bounds>
+			</bpmndi:BPMNShape>
+			<bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+				<omgdi:waypoint x="95.0" y="167.0"></omgdi:waypoint>
+				<omgdi:waypoint x="140.0" y="167.0"></omgdi:waypoint>
+			</bpmndi:BPMNEdge>
+			<bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+				<omgdi:waypoint x="245.0" y="167.0"></omgdi:waypoint>
+				<omgdi:waypoint x="290.0" y="167.0"></omgdi:waypoint>
+			</bpmndi:BPMNEdge>
+			<bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+				<omgdi:waypoint x="395.0" y="167.0"></omgdi:waypoint>
+				<omgdi:waypoint x="440.0" y="167.0"></omgdi:waypoint>
+			</bpmndi:BPMNEdge>
+		</bpmndi:BPMNPlane>
+	</bpmndi:BPMNDiagram>
+</definitions>

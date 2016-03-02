@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn"
+	xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="Examples"
+	typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="Examples" id="definitions">
+	<message id="newInvoice" name="newInvoiceMessage"></message>
+	<message id="payment" name="paymentMessage"></message>
+	<process id="invoiceProcess" isExecutable="true">
+		<startEvent id="messageStart">
+			<messageEventDefinition messageRef="newInvoice"></messageEventDefinition>
+		</startEvent>
+		<intermediateCatchEvent id="paymentEvt">
+			<messageEventDefinition messageRef="payment"></messageEventDefinition>
+		</intermediateCatchEvent>
+		<serviceTask id="servicetask1" name="Service Task" activiti:expression="#{printer.printMessage('newInvoiceMessage')}"></serviceTask>
+		<sequenceFlow id="flow1" sourceRef="messageStart" targetRef="servicetask1"></sequenceFlow>
+		<sequenceFlow id="flow2" sourceRef="servicetask1" targetRef="paymentEvt"></sequenceFlow>
+		<serviceTask id="servicetask2" name="Service Task" activiti:expression="#{printer.printMessage('paymentMessage')}"></serviceTask>
+		<sequenceFlow id="flow3" sourceRef="paymentEvt" targetRef="servicetask2"></sequenceFlow>
+		<endEvent id="endevent1" name="End"></endEvent>
+		<sequenceFlow id="flow4" sourceRef="servicetask2" targetRef="endevent1"></sequenceFlow>
+	</process>
+</definitions>
